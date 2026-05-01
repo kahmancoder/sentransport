@@ -1,5 +1,7 @@
 import "./App.css";
 import Header from "./Header";
+import Footer from "./Footer";
+import Statistique from "./Statistique";
 
 function App() {
   return (
@@ -10,7 +12,11 @@ function App() {
           Bienvenue ! Cette application vous aide a trouver votre ligne de bus a
           Dakar.
         </p>
+        <Statistique />
+        <Statistique />
+        <Statistique />
       </main>
+      <Footer />
     </div>
   );
 }
