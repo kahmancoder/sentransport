@@ -14,6 +14,30 @@ function App() {
   const [ligneSelectionnee, setLigneSelectionnee] = useState(null);
   const [nbRecherches, setNbRecherches] = useState(0);
 
+  function chargerLignes() {
+    setChargement(true);
+    setErreur(null);
+    fetch("http://localhost:5000/lignes")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erreur serveur : " + response.status);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setLignes(data);
+        setChargement(false);
+      })
+      .catch((error) => {
+        setErreur(error.message);
+        setChargement(false);
+      });
+  }
+
+  useEffect(() => {
+    chargerLignes();
+  }, []);
+
   useEffect(() => {
     fetch("http://localhost:5000/lignes")
       .then((response) => {
@@ -43,7 +67,9 @@ function App() {
     if (ligneSelectionnee && ligneSelectionnee.id === ligne.id) {
       setLigneSelectionnee(null);
     } else {
-      setLigneSelectionnee(ligne);
+      fetch(`http://localhost:5000/lignes/${ligne.id}`)
+        .then((response) => response.json())
+        .then((data) => setLigneSelectionnee(data));
     }
   }
 
@@ -81,7 +107,12 @@ function App() {
   return (
     <div className="App">
       <Header />
+
       <main className="contenu">
+        <button className="bouton-recharger" onClick={chargerLignes}>
+          Recharger
+        </button>
+
         <p className="compteur-recherche">
           Vous avez effectué {nbRecherches} recherche
           {nbRecherches > 1 ? "s" : ""}
